@@ -5,268 +5,143 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WiFi File Transfer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-        <style>
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-                    "Helvetica Neue", sans-serif;
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f5f5f5;
-                color: #333;
-            }
-            h1,
-            h2 {
-                color: #2c3e50;
-            }
-            .container {
-                background-color: white;
-                border-radius: 8px;
-                padding: 20px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                margin-bottom: 20px;
-            }
-            .status-message {
-                padding: 10px;
-                border-radius: 4px;
-                margin-bottom: 15px;
-                display: none;
-            }
-            .success {
-                background-color: #d4edda;
-                color: #155724;
-            }
-            .error {
-                background-color: #f8d7da;
-                color: #721c24;
-            }
-            .info {
-                background-color: #e3f2fd;
-                color: #0c5460;
-            }
-            .upload-area {
-                border: 2px dashed #3498db;
-                border-radius: 8px;
-                padding: 30px 20px;
-                text-align: center;
-                background-color: #f8fafc;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                margin-bottom: 20px;
-            }
-            .upload-area:hover {
-                background-color: #e3f2fd;
-            }
-            .upload-area.dragover {
-                background-color: #e3f2fd;
-                border-color: #2196f3;
-            }
-            .file-list {
-                max-height: 400px;
-                overflow-y: auto;
-            }
-            .file-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px;
-                border-bottom: 1px solid #eee;
-            }
-            .file-item:hover {
-                background-color: #f5f5f5;
-            }
-            .file-info {
-                flex-grow: 1;
-            }
-            .file-name {
-                font-weight: bold;
-                word-break: break-all;
-            }
-            .file-meta {
-                font-size: 0.85em;
-                color: #7f8c8d;
-            }
-            .file-actions {
-                display: flex;
-                gap: 10px;
-            }
-            .btn {
-                background-color: #3498db;
-                color: white;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                transition: background-color 0.3s ease;
-            }
-            .btn:hover {
-                background-color: #2980b9;
-            }
-            .btn-delete {
-                background-color: #e74c3c;
-            }
-            .btn-delete:hover {
-                background-color: #c0392b;
-            }
-            .btn-refresh {
-                background-color: #2ecc71;
-                margin-bottom: 15px;
-            }
-            .btn-refresh:hover {
-                background-color: #27ae60;
-            }
-            #fileInput {
-                display: none;
-            }
-            .spinner {
-                border: 3px solid rgba(0, 0, 0, 0.1);
-                border-radius: 50%;
-                border-top: 3px solid #3498db;
-                width: 20px;
-                height: 20px;
-                animation: spin 1s linear infinite;
-                display: inline-block;
-                vertical-align: middle;
-                margin-right: 10px;
-            }
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-            .hidden {
-                display: none;
-            }
-            .address-box {
-                background-color: #f1f8e9;
-                padding: 15px;
-                border-radius: 4px;
-                text-align: center;
-                margin-bottom: 20px;
-                word-break: break-all;
-            }
-            .address-value {
-                font-weight: bold;
-                font-family: monospace;
-            }
-            .qr-container {
-                display: flex;
-                justify-content: center;
-                margin: 15px 0;
-            }
-            .text-share-container {
-                margin-top: 20px;
-                padding: 15px;
-                background-color: #f8f9fa;
-                border-radius: 8px;
-                border: 1px solid #ddd;
-            }
-            .text-input {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-family: inherit;
-                resize: vertical;
-                min-height: 100px;
-            }
-            .tabs {
-                display: flex;
-                margin-bottom: 15px;
-                border-bottom: 1px solid #ddd;
-            }
-            .tab {
-                padding: 10px 15px;
-                cursor: pointer;
-                background-color: #f8f9fa;
-                border: 1px solid #ddd;
-                border-bottom: none;
-                border-radius: 4px 4px 0 0;
-                margin-right: 5px;
-            }
-            .tab.active {
-                background-color: white;
-                border-bottom: 1px solid white;
-                margin-bottom: -1px;
-            }
-            .tab-content {
-                display: none;
-            }
-            .tab-content.active {
-                display: block;
-            }
-            @media (max-width: 600px) {
-                .file-item {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-                .file-actions {
-                    margin-top: 10px;
-                    width: 100%;
-                    justify-content: flex-end;
-                }
-            }
-        </style>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
-        <div class="container">
-            <h1>WiFi File Transfer</h1>
+    <body class="bg-gray-100">
+        <div class="max-w-4xl mx-auto p-4 font-sans">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                    WiFi File Transfer
+                </h1>
 
-            <div id="statusMessage" class="status-message"></div>
+                <div
+                    id="statusMessage"
+                    class="mb-4 p-3 rounded-md hidden"
+                ></div>
 
-            <div class="tabs">
-                <div class="tab active" data-tab="files">Files</div>
-                <div class="tab" data-tab="text">Share Text</div>
-            </div>
-
-            <div id="filesTab" class="tab-content active">
-                <div class="address-box">
-                    <p>Share this address with devices on the same WiFi:</p>
-                    <p class="address-value" id="serverAddress">Loading...</p>
-                    <div class="qr-container" id="serverQrCode"></div>
+                <div class="border-b border-gray-200 mb-4">
+                    <ul class="flex -mb-px">
+                        <li class="mr-1">
+                            <button
+                                class="tab active py-2 px-4 text-blue-600 border-b-2 border-blue-600 font-medium"
+                                data-tab="files"
+                            >
+                                Files
+                            </button>
+                        </li>
+                        <li class="mr-1">
+                            <button
+                                class="tab py-2 px-4 text-gray-600 hover:text-blue-600 font-medium"
+                                data-tab="text"
+                            >
+                                Share Text
+                            </button>
+                        </li>
+                    </ul>
                 </div>
 
-                <h2>Upload Files</h2>
-                <div class="upload-area" id="uploadArea">
-                    <p>Drop files here or click to select files</p>
-                    <input type="file" id="fileInput" multiple />
-                </div>
+                <div id="filesTab" class="tab-content active">
+                    <div class="bg-green-50 p-4 rounded-md mb-6">
+                        <p class="text-center mb-2">
+                            Share this address with devices on the same WiFi:
+                        </p>
+                        <p
+                            id="serverAddress"
+                            class="text-center font-bold font-mono text-lg mb-2"
+                        >
+                            Loading...
+                        </p>
+                        <div
+                            id="serverQrCode"
+                            class="flex justify-center my-4"
+                        ></div>
+                    </div>
 
-                <h2>Available Files</h2>
-                <button id="refreshBtn" class="btn btn-refresh">
-                    <span id="refreshSpinner" class="spinner hidden"></span>
-                    Refresh File List
-                </button>
-                <div class="file-list" id="fileList">
-                    <p>Loading files...</p>
-                </div>
-            </div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">
+                        Upload Files
+                    </h2>
+                    <div
+                        id="uploadArea"
+                        class="border-2 border-dashed border-blue-400 rounded-lg p-8 text-center bg-blue-50 cursor-pointer transition hover:bg-blue-100 mb-6"
+                    >
+                        <p>Drop files here or click to select files</p>
+                        <input
+                            type="file"
+                            id="fileInput"
+                            class="hidden"
+                            multiple
+                        />
+                    </div>
 
-            <div id="textTab" class="tab-content">
-                <div class="text-share-container">
-                    <h2>Share Text via QR Code</h2>
-                    <p>Enter text below to generate a QR code:</p>
-                    <textarea
-                        id="textToShare"
-                        class="text-input"
-                        placeholder="Enter text to share..."
-                    ></textarea>
-                    <button id="generateQrBtn" class="btn">
-                        Generate QR Code
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">
+                        Available Files
+                    </h2>
+                    <button
+                        id="refreshBtn"
+                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md mb-4 flex items-center"
+                    >
+                        <span
+                            id="refreshSpinner"
+                            class="hidden w-4 h-4 mr-2 border-2 border-t-2 border-white rounded-full animate-spin"
+                        ></span>
+                        Refresh File List
                     </button>
-                    <div class="qr-container" id="textQrCode"></div>
+                    <div
+                        id="fileList"
+                        class="max-h-96 overflow-y-auto border border-gray-200 rounded-md"
+                    >
+                        <p class="p-4">Loading files...</p>
+                    </div>
+                </div>
+
+                <div id="textTab" class="tab-content hidden">
+                    <div
+                        class="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6"
+                    >
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">
+                            Share Text
+                        </h2>
+                        <textarea
+                            id="textToShare"
+                            class="w-full p-3 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-32"
+                            placeholder="Enter text to share..."
+                        ></textarea>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button
+                                id="saveTextBtn"
+                                class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
+                            >
+                                Save Text
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">
+                        Saved Texts
+                    </h2>
+                    <button
+                        id="refreshTextsBtn"
+                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md mb-4 flex items-center"
+                    >
+                        <span
+                            id="refreshTextsSpinner"
+                            class="hidden w-4 h-4 mr-2 border-2 border-t-2 border-white rounded-full animate-spin"
+                        ></span>
+                        Refresh Saved Texts
+                    </button>
+                    <div
+                        id="savedTextsList"
+                        class="max-h-96 overflow-y-auto border border-gray-200 rounded-md"
+                    >
+                        <p class="p-4">Loading saved texts...</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
+                // DOM Elements
                 const serverAddress = document.getElementById("serverAddress");
                 const statusMessage = document.getElementById("statusMessage");
                 const fileList = document.getElementById("fileList");
@@ -278,9 +153,15 @@
                 const tabs = document.querySelectorAll(".tab");
                 const tabContents = document.querySelectorAll(".tab-content");
                 const textToShare = document.getElementById("textToShare");
-                const generateQrBtn = document.getElementById("generateQrBtn");
-                const textQrCode = document.getElementById("textQrCode");
+                const saveTextBtn = document.getElementById("saveTextBtn");
                 const serverQrCode = document.getElementById("serverQrCode");
+                const savedTextsList =
+                    document.getElementById("savedTextsList");
+                const refreshTextsBtn =
+                    document.getElementById("refreshTextsBtn");
+                const refreshTextsSpinner = document.getElementById(
+                    "refreshTextsSpinner"
+                );
 
                 // Tab switching
                 tabs.forEach((tab) => {
@@ -288,16 +169,43 @@
                         const tabId = tab.getAttribute("data-tab");
 
                         // Update active tab
-                        tabs.forEach((t) => t.classList.remove("active"));
-                        tab.classList.add("active");
+                        tabs.forEach((t) => {
+                            t.classList.remove(
+                                "active",
+                                "text-blue-600",
+                                "border-b-2",
+                                "border-blue-600"
+                            );
+                            t.classList.add("text-gray-600");
+                        });
+                        tab.classList.add(
+                            "active",
+                            "text-blue-600",
+                            "border-b-2",
+                            "border-blue-600"
+                        );
+                        tab.classList.remove("text-gray-600");
 
                         // Update active content
                         tabContents.forEach((content) =>
+                            content.classList.add("hidden")
+                        );
+                        tabContents.forEach((content) =>
                             content.classList.remove("active")
                         );
-                        document
-                            .getElementById(tabId + "Tab")
-                            .classList.add("active");
+
+                        const activeTab = document.getElementById(
+                            tabId + "Tab"
+                        );
+                        activeTab.classList.remove("hidden");
+                        activeTab.classList.add("active");
+
+                        // Load specific content for active tab
+                        if (tabId === "files") {
+                            loadFileList();
+                        } else if (tabId === "text") {
+                            loadSavedTexts();
+                        }
                     });
                 });
 
@@ -314,38 +222,35 @@
                     correctLevel: QRCode.CorrectLevel.H,
                 });
 
-                // Generate QR code for text
-                generateQrBtn.addEventListener("click", () => {
-                    const text = textToShare.value.trim();
-                    if (!text) {
-                        showStatus("Please enter some text to share", "error");
-                        return;
-                    }
-
-                    // Clear previous QR code
-                    textQrCode.innerHTML = "";
-
-                    // Generate new QR code
-                    new QRCode(textQrCode, {
-                        text: text,
-                        width: 128,
-                        height: 128,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H,
-                    });
-
-                    showStatus("QR code generated successfully", "success");
-                });
-
                 // Show status message
                 function showStatus(message, type) {
                     statusMessage.textContent = message;
-                    statusMessage.className = "status-message " + type;
-                    statusMessage.style.display = "block";
+
+                    // Reset all classes
+                    statusMessage.className = "mb-4 p-3 rounded-md";
+
+                    // Add appropriate color classes
+                    if (type === "success") {
+                        statusMessage.classList.add(
+                            "bg-green-100",
+                            "text-green-800"
+                        );
+                    } else if (type === "error") {
+                        statusMessage.classList.add(
+                            "bg-red-100",
+                            "text-red-800"
+                        );
+                    } else {
+                        statusMessage.classList.add(
+                            "bg-blue-100",
+                            "text-blue-800"
+                        );
+                    }
+
+                    statusMessage.classList.remove("hidden");
 
                     setTimeout(() => {
-                        statusMessage.style.display = "none";
+                        statusMessage.classList.add("hidden");
                     }, 5000);
                 }
 
@@ -379,19 +284,19 @@
                         .then((files) => {
                             if (files.length === 0) {
                                 fileList.innerHTML =
-                                    "<p>No files available.</p>";
+                                    '<p class="p-4 text-gray-500">No files available.</p>';
                                 return;
                             }
 
                             let html = "";
                             files.forEach((file) => {
                                 html += `
-                                <div class="file-item">
-                                    <div class="file-info">
-                                        <div class="file-name">${
+                                <div class="border-b border-gray-200 p-4 hover:bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="mb-2 sm:mb-0">
+                                        <div class="font-medium break-all">${
                                             file.name
                                         }</div>
-                                        <div class="file-meta">
+                                        <div class="text-sm text-gray-500">
                                             ${formatFileSize(
                                                 file.size
                                             )} • Uploaded: ${formatDate(
@@ -399,25 +304,27 @@
                                 )}
                                         </div>
                                     </div>
-                                    <div class="file-actions">
+                                    <div class="flex gap-2 justify-end">
                                         <a href="/uploads/${encodeURIComponent(
                                             file.name
-                                        )}" download="${
-                                    file.name
-                                }" class="btn">Download</a>
-                                        <button class="btn btn-delete" data-filename="${
-                                            file.name
-                                        }">Delete</button>
+                                        )}" download="${file.name}" 
+                                           class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm">
+                                           Download
+                                        </a>
+                                        <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm delete-file" 
+                                                data-filename="${file.name}">
+                                            Delete
+                                        </button>
                                     </div>
                                 </div>
-                            `;
+                                `;
                             });
 
                             fileList.innerHTML = html;
 
                             // Add event listeners to delete buttons
                             document
-                                .querySelectorAll(".btn-delete")
+                                .querySelectorAll(".delete-file")
                                 .forEach((button) => {
                                     button.addEventListener(
                                         "click",
@@ -434,12 +341,166 @@
                         .catch((error) => {
                             console.error("Error loading files:", error);
                             fileList.innerHTML =
-                                "<p>Error loading files. Please try again.</p>";
+                                '<p class="p-4 text-red-500">Error loading files. Please try again.</p>';
                             showStatus("Failed to load files", "error");
                         })
                         .finally(() => {
                             refreshSpinner.classList.add("hidden");
                         });
+                }
+
+                // Load saved texts
+                function loadSavedTexts() {
+                    refreshTextsSpinner.classList.remove("hidden");
+
+                    fetch("/texts")
+                        .then((response) => response.json())
+                        .then((texts) => {
+                            if (!texts || texts.length === 0) {
+                                savedTextsList.innerHTML =
+                                    '<p class="p-4 text-gray-500">No saved texts available.</p>';
+                                return;
+                            }
+
+                            let html = "";
+                            texts.forEach((text, index) => {
+                                const displayText =
+                                    text.content.length > 100
+                                        ? text.content.substring(0, 100) + "..."
+                                        : text.content;
+
+                                html += `
+                                <div class="border-b border-gray-200 p-4 hover:bg-gray-50">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-medium">Text #${
+                                            index + 1
+                                        }</h3>
+                                        <div class="text-sm text-gray-500">
+                                            ${formatDate(text.timestamp)}
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 mb-3">${displayText}</p>
+                                    <div class="flex gap-2 justify-end">
+                                        <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm view-text" 
+                                                data-content="${encodeURIComponent(
+                                                    text.content
+                                                )}">
+                                            View
+                                        </button>
+                                        <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm delete-text" 
+                                                data-index="${index}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                                `;
+                            });
+
+                            savedTextsList.innerHTML = html;
+
+                            // Add event listeners
+                            document
+                                .querySelectorAll(".view-text")
+                                .forEach((button) => {
+                                    button.addEventListener(
+                                        "click",
+                                        function () {
+                                            const content = decodeURIComponent(
+                                                this.getAttribute(
+                                                    "data-content"
+                                                )
+                                            );
+                                            textToShare.value = content;
+                                        }
+                                    );
+                                });
+
+                            document
+                                .querySelectorAll(".generate-qr")
+                                .forEach((button) => {
+                                    button.addEventListener(
+                                        "click",
+                                        function () {
+                                            const content = decodeURIComponent(
+                                                this.getAttribute(
+                                                    "data-content"
+                                                )
+                                            );
+                                            textToShare.value = content;
+                                            generateQRCode(content);
+                                        }
+                                    );
+                                });
+
+                            document
+                                .querySelectorAll(".delete-text")
+                                .forEach((button) => {
+                                    button.addEventListener(
+                                        "click",
+                                        function () {
+                                            const index =
+                                                this.getAttribute("data-index");
+                                            deleteText(index);
+                                        }
+                                    );
+                                });
+                        })
+                        .catch((error) => {
+                            console.error("Error loading saved texts:", error);
+                            savedTextsList.innerHTML =
+                                '<p class="p-4 text-red-500">Error loading saved texts. Please try again.</p>';
+                            showStatus("Failed to load saved texts", "error");
+                        })
+                        .finally(() => {
+                            refreshTextsSpinner.classList.add("hidden");
+                        });
+                }
+
+                // Save text
+                function saveText(text) {
+                    if (!text) {
+                        showStatus("Please enter some text to save", "error");
+                        return;
+                    }
+
+                    fetch("/save-text", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({content: text}),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            showStatus(data.message, "success");
+                            loadSavedTexts();
+                        })
+                        .catch((error) => {
+                            console.error("Error saving text:", error);
+                            showStatus("Failed to save text", "error");
+                        });
+                }
+
+                // Delete saved text
+                function deleteText(index) {
+                    if (
+                        confirm(
+                            "Are you sure you want to delete this saved text?"
+                        )
+                    ) {
+                        fetch(`/texts/${index}`, {
+                            method: "DELETE",
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                showStatus(data.message, "success");
+                                loadSavedTexts();
+                            })
+                            .catch((error) => {
+                                console.error("Error deleting text:", error);
+                                showStatus("Failed to delete text", "error");
+                            });
+                    }
                 }
 
                 // Delete file
@@ -521,16 +582,16 @@
 
                 uploadArea.addEventListener("dragover", (e) => {
                     e.preventDefault();
-                    uploadArea.classList.add("dragover");
+                    uploadArea.classList.add("bg-blue-100");
                 });
 
                 uploadArea.addEventListener("dragleave", () => {
-                    uploadArea.classList.remove("dragover");
+                    uploadArea.classList.remove("bg-blue-100");
                 });
 
                 uploadArea.addEventListener("drop", (e) => {
                     e.preventDefault();
-                    uploadArea.classList.remove("dragover");
+                    uploadArea.classList.remove("bg-blue-100");
 
                     if (e.dataTransfer.files.length > 0) {
                         uploadFiles(e.dataTransfer.files);
@@ -538,6 +599,11 @@
                 });
 
                 refreshBtn.addEventListener("click", loadFileList);
+                refreshTextsBtn.addEventListener("click", loadSavedTexts);
+
+                saveTextBtn.addEventListener("click", () => {
+                    saveText(textToShare.value.trim());
+                });
 
                 // Initial load
                 loadFileList();

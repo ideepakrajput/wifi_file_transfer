@@ -14,6 +14,14 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Path to the texts JSON file
+const textsFilePath = path.join(uploadDir, 'texts.json');
+
+// Create an empty texts file if it doesn't exist
+if (!fs.existsSync(textsFilePath)) {
+    fs.writeFileSync(textsFilePath, JSON.stringify([]));
+}
+
 // Configure storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -69,15 +77,17 @@ app.get('/files', (req, res) => {
             return res.status(500).json({ error: 'Failed to list files' });
         }
 
-        const fileDetails = files.map(filename => {
-            const filePath = path.join(uploadDir, filename);
-            const stats = fs.statSync(filePath);
-            return {
-                name: filename,
-                size: stats.size,
-                lastModified: stats.mtime
-            };
-        });
+        const fileDetails = files
+            .filter(file => file !== 'texts.json') // Exclude the texts.json file
+            .map(filename => {
+                const filePath = path.join(uploadDir, filename);
+                const stats = fs.statSync(filePath);
+                return {
+                    name: filename,
+                    size: stats.size,
+                    lastModified: stats.mtime
+                };
+            });
 
         res.json(fileDetails);
     });
@@ -97,6 +107,86 @@ app.delete('/files/:filename', (req, res) => {
         });
     } else {
         res.status(404).json({ error: 'File not found' });
+    }
+});
+
+// Text handling routes
+// Get all saved texts
+app.get('/texts', (req, res) => {
+    try {
+        if (!fs.existsSync(textsFilePath)) {
+            return res.json([]);
+        }
+
+        const textsData = fs.readFileSync(textsFilePath, 'utf-8');
+        const texts = JSON.parse(textsData || '[]');
+        res.json(texts);
+    } catch (err) {
+        console.error('Error reading texts file:', err);
+        res.status(500).json({ error: 'Failed to read saved texts' });
+    }
+});
+
+// Save a new text
+app.post('/save-text', (req, res) => {
+    try {
+        const { content } = req.body;
+
+        if (!content || content.trim() === '') {
+            return res.status(400).json({ error: 'Text content is required' });
+        }
+
+        // Read existing texts
+        let texts = [];
+        if (fs.existsSync(textsFilePath)) {
+            const textsData = fs.readFileSync(textsFilePath, 'utf-8');
+            texts = JSON.parse(textsData || '[]');
+        }
+
+        // Add new text with timestamp
+        texts.push({
+            content: content,
+            timestamp: new Date().toISOString()
+        });
+
+        // Save back to file
+        fs.writeFileSync(textsFilePath, JSON.stringify(texts, null, 2));
+
+        res.json({ message: 'Text saved successfully' });
+    } catch (err) {
+        console.error('Error saving text:', err);
+        res.status(500).json({ error: 'Failed to save text' });
+    }
+});
+
+// Delete a saved text
+app.delete('/texts/:index', (req, res) => {
+    try {
+        const index = parseInt(req.params.index);
+
+        if (!fs.existsSync(textsFilePath)) {
+            return res.status(404).json({ error: 'No saved texts found' });
+        }
+
+        // Read existing texts
+        const textsData = fs.readFileSync(textsFilePath, 'utf-8');
+        const texts = JSON.parse(textsData || '[]');
+
+        // Check if index is valid
+        if (isNaN(index) || index < 0 || index >= texts.length) {
+            return res.status(400).json({ error: 'Invalid text index' });
+        }
+
+        // Remove the text at the specified index
+        texts.splice(index, 1);
+
+        // Save back to file
+        fs.writeFileSync(textsFilePath, JSON.stringify(texts, null, 2));
+
+        res.json({ message: 'Text deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting text:', err);
+        res.status(500).json({ error: 'Failed to delete text' });
     }
 });
 
