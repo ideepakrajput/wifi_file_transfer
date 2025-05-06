@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WiFi File Transfer</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
         <style>
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -153,6 +154,53 @@
                 font-weight: bold;
                 font-family: monospace;
             }
+            .qr-container {
+                display: flex;
+                justify-content: center;
+                margin: 15px 0;
+            }
+            .text-share-container {
+                margin-top: 20px;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
+            .text-input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-family: inherit;
+                resize: vertical;
+                min-height: 100px;
+            }
+            .tabs {
+                display: flex;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #ddd;
+            }
+            .tab {
+                padding: 10px 15px;
+                cursor: pointer;
+                background-color: #f8f9fa;
+                border: 1px solid #ddd;
+                border-bottom: none;
+                border-radius: 4px 4px 0 0;
+                margin-right: 5px;
+            }
+            .tab.active {
+                background-color: white;
+                border-bottom: 1px solid white;
+                margin-bottom: -1px;
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
             @media (max-width: 600px) {
                 .file-item {
                     flex-direction: column;
@@ -172,24 +220,48 @@
 
             <div id="statusMessage" class="status-message"></div>
 
-            <div class="address-box">
-                <p>Share this address with devices on the same WiFi:</p>
-                <p class="address-value" id="serverAddress">Loading...</p>
+            <div class="tabs">
+                <div class="tab active" data-tab="files">Files</div>
+                <div class="tab" data-tab="text">Share Text</div>
             </div>
 
-            <h2>Upload Files</h2>
-            <div class="upload-area" id="uploadArea">
-                <p>Drop files here or click to select files</p>
-                <input type="file" id="fileInput" multiple />
+            <div id="filesTab" class="tab-content active">
+                <div class="address-box">
+                    <p>Share this address with devices on the same WiFi:</p>
+                    <p class="address-value" id="serverAddress">Loading...</p>
+                    <div class="qr-container" id="serverQrCode"></div>
+                </div>
+
+                <h2>Upload Files</h2>
+                <div class="upload-area" id="uploadArea">
+                    <p>Drop files here or click to select files</p>
+                    <input type="file" id="fileInput" multiple />
+                </div>
+
+                <h2>Available Files</h2>
+                <button id="refreshBtn" class="btn btn-refresh">
+                    <span id="refreshSpinner" class="spinner hidden"></span>
+                    Refresh File List
+                </button>
+                <div class="file-list" id="fileList">
+                    <p>Loading files...</p>
+                </div>
             </div>
 
-            <h2>Available Files</h2>
-            <button id="refreshBtn" class="btn btn-refresh">
-                <span id="refreshSpinner" class="spinner hidden"></span>
-                Refresh File List
-            </button>
-            <div class="file-list" id="fileList">
-                <p>Loading files...</p>
+            <div id="textTab" class="tab-content">
+                <div class="text-share-container">
+                    <h2>Share Text via QR Code</h2>
+                    <p>Enter text below to generate a QR code:</p>
+                    <textarea
+                        id="textToShare"
+                        class="text-input"
+                        placeholder="Enter text to share..."
+                    ></textarea>
+                    <button id="generateQrBtn" class="btn">
+                        Generate QR Code
+                    </button>
+                    <div class="qr-container" id="textQrCode"></div>
+                </div>
             </div>
         </div>
 
@@ -203,9 +275,68 @@
                 const refreshBtn = document.getElementById("refreshBtn");
                 const refreshSpinner =
                     document.getElementById("refreshSpinner");
+                const tabs = document.querySelectorAll(".tab");
+                const tabContents = document.querySelectorAll(".tab-content");
+                const textToShare = document.getElementById("textToShare");
+                const generateQrBtn = document.getElementById("generateQrBtn");
+                const textQrCode = document.getElementById("textQrCode");
+                const serverQrCode = document.getElementById("serverQrCode");
+
+                // Tab switching
+                tabs.forEach((tab) => {
+                    tab.addEventListener("click", () => {
+                        const tabId = tab.getAttribute("data-tab");
+
+                        // Update active tab
+                        tabs.forEach((t) => t.classList.remove("active"));
+                        tab.classList.add("active");
+
+                        // Update active content
+                        tabContents.forEach((content) =>
+                            content.classList.remove("active")
+                        );
+                        document
+                            .getElementById(tabId + "Tab")
+                            .classList.add("active");
+                    });
+                });
 
                 // Get server address
                 serverAddress.textContent = window.location.origin;
+
+                // Generate QR code for server address
+                new QRCode(serverQrCode, {
+                    text: window.location.origin,
+                    width: 128,
+                    height: 128,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H,
+                });
+
+                // Generate QR code for text
+                generateQrBtn.addEventListener("click", () => {
+                    const text = textToShare.value.trim();
+                    if (!text) {
+                        showStatus("Please enter some text to share", "error");
+                        return;
+                    }
+
+                    // Clear previous QR code
+                    textQrCode.innerHTML = "";
+
+                    // Generate new QR code
+                    new QRCode(textQrCode, {
+                        text: text,
+                        width: 128,
+                        height: 128,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H,
+                    });
+
+                    showStatus("QR code generated successfully", "success");
+                });
 
                 // Show status message
                 function showStatus(message, type) {
