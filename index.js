@@ -6,7 +6,7 @@ const cors = require('cors');
 const ip = require('ip');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6272;
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
@@ -14,8 +14,15 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Create backup directory if it doesn't exist
+const backupDir = path.join(__dirname, 'backup');
+if (!fs.existsSync(backupDir)) {
+    fs.mkdirSync(backupDir, { recursive: true });
+}
+
 // Path to the texts JSON file
 const textsFilePath = path.join(uploadDir, 'texts.json');
+const backupTextsFilePath = path.join(backupDir, 'texts_backup.json');
 
 // Create an empty texts file if it doesn't exist
 if (!fs.existsSync(textsFilePath)) {
@@ -93,18 +100,42 @@ app.get('/files', (req, res) => {
     });
 });
 
-// Delete file
+// Delete file (now moves to backup)
 app.delete('/files/:filename', (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(uploadDir, filename);
+    const backupFilePath = path.join(backupDir, `${filename}_${Date.now()}`);
 
     if (fs.existsSync(filePath)) {
-        fs.unlink(filePath, err => {
-            if (err) {
-                return res.status(500).json({ error: 'Failed to delete file' });
-            }
-            res.json({ message: 'File deleted successfully' });
-        });
+        try {
+            // Create a readable stream from the source file
+            const readStream = fs.createReadStream(filePath);
+            // Create a writable stream to the destination file
+            const writeStream = fs.createWriteStream(backupFilePath);
+
+            // Pipe the source to the destination
+            readStream.pipe(writeStream);
+
+            // When the copy is complete, delete the original
+            writeStream.on('finish', () => {
+                fs.unlink(filePath, err => {
+                    if (err) {
+                        return res.status(500).json({ error: 'Failed to delete original file after backup' });
+                    }
+                    res.json({
+                        message: 'File moved to backup successfully',
+                        backupLocation: backupFilePath
+                    });
+                });
+            });
+
+            // Handle errors
+            writeStream.on('error', err => {
+                res.status(500).json({ error: 'Failed to backup file: ' + err.message });
+            });
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to move file to backup: ' + err.message });
+        }
     } else {
         res.status(404).json({ error: 'File not found' });
     }
@@ -159,7 +190,7 @@ app.post('/save-text', (req, res) => {
     }
 });
 
-// Delete a saved text
+// Delete a saved text (now backs up before deletion)
 app.delete('/texts/:index', (req, res) => {
     try {
         const index = parseInt(req.params.index);
@@ -177,13 +208,33 @@ app.delete('/texts/:index', (req, res) => {
             return res.status(400).json({ error: 'Invalid text index' });
         }
 
+        // Backup the text being deleted
+        let backupTexts = [];
+        if (fs.existsSync(backupTextsFilePath)) {
+            const backupData = fs.readFileSync(backupTextsFilePath, 'utf-8');
+            backupTexts = JSON.parse(backupData || '[]');
+        }
+
+        // Add the text to backup with deletion timestamp
+        const textToBackup = {
+            ...texts[index],
+            deletedAt: new Date().toISOString()
+        };
+        backupTexts.push(textToBackup);
+
+        // Save to backup file
+        fs.writeFileSync(backupTextsFilePath, JSON.stringify(backupTexts, null, 2));
+
         // Remove the text at the specified index
         texts.splice(index, 1);
 
         // Save back to file
         fs.writeFileSync(textsFilePath, JSON.stringify(texts, null, 2));
 
-        res.json({ message: 'Text deleted successfully' });
+        res.json({
+            message: 'Text backed up and deleted successfully',
+            backedUpText: textToBackup
+        });
     } catch (err) {
         console.error('Error deleting text:', err);
         res.status(500).json({ error: 'Failed to delete text' });
