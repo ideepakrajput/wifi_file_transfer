@@ -54,4 +54,4 @@ API_KEY=your-api-key
 - Caching strategies (Redis)
 
 ---
-🎉 **Project is now production-ready!**
+Project is now production-ready!
