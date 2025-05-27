@@ -40,20 +40,54 @@ function createDirectory(dirPath) {
 
 // Commit content with backdated timestamp
 function createBackdatedCommit(date, message, filePath) {
-    const isoDate = date.toISOString();
+    // Format date for git (YYYY-MM-DDTHH:MM:SS format)
+    const gitDate = date.toISOString().replace(/\.\d{3}Z$/, '');
 
     try {
-        execSync(`git add "${filePath}"`, { stdio: 'inherit' });
-        execSync(`GIT_COMMITTER_DATE="${isoDate}" git commit --date="${isoDate}" -m "${message}"`, {
-            stdio: 'inherit'
+        // Add file to git
+        execSync(`git add "${filePath}"`, {
+            stdio: 'pipe',
+            encoding: 'utf8'
         });
+
+        // Create commit with proper encoding
+        const commitCommand = `git commit --date="${gitDate}" -m "${message}"`;
+        execSync(commitCommand, {
+            stdio: 'pipe',
+            encoding: 'utf8',
+            env: {
+                ...process.env,
+                GIT_COMMITTER_DATE: gitDate,
+                LANG: 'en_US.UTF-8',
+                LC_ALL: 'en_US.UTF-8'
+            }
+        });
+
         console.log(`✅ Created commit: ${message}`);
     } catch (error) {
-        console.error(`❌ Failed to create commit: ${error.message}`);
+        console.error(`❌ Failed to create commit for ${filePath}`);
+        console.error(`Error: ${error.message}`);
+
+        // Try without special characters as fallback
+        const fallbackMessage = message.replace(/[^\x00-\x7F]/g, "");
+        try {
+            const fallbackCommand = `git commit --date="${gitDate}" -m "${fallbackMessage}"`;
+            execSync(fallbackCommand, {
+                stdio: 'pipe',
+                encoding: 'utf8',
+                env: {
+                    ...process.env,
+                    GIT_COMMITTER_DATE: gitDate
+                }
+            });
+            console.log(`✅ Created commit (fallback): ${fallbackMessage}`);
+        } catch (fallbackError) {
+            console.error(`❌ Fallback commit also failed: ${fallbackError.message}`);
+        }
     }
 }
 
-// Content templates for each commit
+// Content templates for each commit (removed emojis from commit messages)
 const commitContents = [
     {
         folder: 'date_1',
@@ -80,7 +114,7 @@ Starting a new exciting project today! This marks the beginning of something ama
 ---
 *Created on: ${new Date().toLocaleDateString()}*
 `,
-        message: '🎯 Initial project setup and planning documentation'
+        message: 'Initial project setup and planning documentation'
     },
     {
         folder: 'date_2',
@@ -113,7 +147,7 @@ Designing a scalable and maintainable system architecture.
 - Uptime: 99.9%
 - Concurrent users: 10,000+
 `,
-        message: '🏗️ Add comprehensive system architecture design'
+        message: 'Add comprehensive system architecture design'
     },
     {
         folder: 'date_3',
@@ -173,7 +207,7 @@ Authorization: Bearer <token>
 - **404** - Not Found
 - **500** - Internal Server Error
 `,
-        message: '📡 Implement comprehensive API documentation'
+        message: 'Implement comprehensive API documentation'
     },
     {
         folder: 'date_4',
@@ -234,7 +268,7 @@ describe('UserService', () => {
 - Code quality checks
 - Security vulnerability scans
 `,
-        message: '🧪 Establish comprehensive testing strategy and framework'
+        message: 'Establish comprehensive testing strategy and framework'
     },
     {
         folder: 'date_5',
@@ -295,14 +329,28 @@ API_KEY=your-api-key
 - Caching strategies (Redis)
 
 ---
-🎉 **Project is now production-ready!**
+Project is now production-ready!
 `,
-        message: '🚀 Complete deployment guide and production setup'
+        message: 'Complete deployment guide and production setup'
     }
 ];
 
 async function main() {
-    console.log('\n🕒 Backdated Commit Generator\n');
+    console.log('\n⏰ Backdated Commit Generator\n');
+
+    // Check if we're in a git repository
+    try {
+        execSync('git rev-parse --git-dir', { stdio: 'pipe' });
+    } catch (error) {
+        console.log('❌ Not in a git repository. Initializing git...');
+        try {
+            execSync('git init', { stdio: 'inherit' });
+            console.log('✅ Git repository initialized');
+        } catch (initError) {
+            console.error('❌ Failed to initialize git repository');
+            process.exit(1);
+        }
+    }
 
     const days = getLast7Days();
 
