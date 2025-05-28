@@ -108,4 +108,33 @@ done
 
 echo -e "\n${GREEN}🎉 Successfully created 5 backdated commits!${NC}"
 echo -e "${BLUE}📁 Files created in: $base_dir${NC}"
-echo -e "\n${YELLOW}💡 Use 'git log --oneline' to see your commits${NC}"
+
+# Show recent commits
+echo -e "\n${YELLOW}📋 Recent commits:${NC}"
+git log --oneline -5
+
+# Ask if user wants to push
+echo ""
+read -p "Do you want to push these commits to remote? (Y/n): " push_choice
+
+if [[ "$push_choice" =~ ^[Yy]$ ]]; then
+    # Check if remote exists
+    if git remote get-url origin > /dev/null 2>&1; then
+        current_branch=$(git branch --show-current)
+        echo -e "\n${BLUE}🚀 Pushing to remote...${NC}"
+        
+        if git push origin "$current_branch"; then
+            echo -e "${GREEN}✅ Successfully pushed to remote!${NC}"
+        else
+            echo -e "${RED}❌ Failed to push to remote${NC}"
+            echo -e "${YELLOW}💡 You may need to set up a remote repository first${NC}"
+        fi
+    else
+        echo -e "${YELLOW}⚠️  No remote repository configured${NC}"
+        echo -e "${YELLOW}💡 Add a remote with: git remote add origin <repository-url>${NC}"
+    fi
+else
+    echo -e "${YELLOW}💡 You can push later with: git push origin $(git branch --show-current)${NC}"
+fi
+
+echo -e "\n${GREEN}🎯 All done!${NC}"
