@@ -1,0 +1,1202 @@
+[
+  {
+    "id": 1,
+    "name": "ASHWAGANDHA"
+  },
+  {
+    "id": 2,
+    "name": "ALOE VERA"
+  },
+  {
+    "id": 3,
+    "name": "APPLE CIDER VINEGAR"
+  },
+  {
+    "id": 4,
+    "name": "GREEN COFFEE"
+  },
+  {
+    "id": 5,
+    "name": "OLIVE OIL"
+  },
+  {
+    "id": 6,
+    "name": "TURMERIC"
+  },
+  {
+    "id": 7,
+    "name": "FENUGREEK SEEDS"
+  },
+  {
+    "id": 8,
+    "name": "FENNEL SEEDS"
+  },
+  {
+    "id": 9,
+    "name": "CELERY"
+  },
+  {
+    "id": 10,
+    "name": "CINNAMON"
+  },
+  {
+    "id": 11,
+    "name": "SHILAJIT"
+  },
+  {
+    "id": 12,
+    "name": "TULSI"
+  },
+  {
+    "id": 13,
+    "name": "HONEY"
+  },
+  {
+    "id": 14,
+    "name": "LICORICE"
+  },
+  {
+    "id": 15,
+    "name": "NEEM"
+  },
+  {
+    "id": 16,
+    "name": "CLOVE"
+  },
+  {
+    "id": 17,
+    "name": "ABHRAK"
+  },
+  {
+    "id": 18,
+    "name": "SAFED MUSLI"
+  },
+  {
+    "id": 19,
+    "name": "AMLA"
+  },
+  {
+    "id": 20,
+    "name": "AJWAIN"
+  },
+  {
+    "id": 21,
+    "name": "SAFFRON (KESAR)"
+  },
+  {
+    "id": 22,
+    "name": "VACHA"
+  },
+  {
+    "id": 23,
+    "name": "BHRINGRAJ"
+  },
+  {
+    "id": 24,
+    "name": "GILOY"
+  },
+  {
+    "id": 25,
+    "name": "CASTOR OIL"
+  },
+  {
+    "id": 26,
+    "name": "HIMALAYAN SALT"
+  },
+  {
+    "id": 27,
+    "name": "ANANTAMUL"
+  },
+  {
+    "id": 28,
+    "name": "CITRONELLA"
+  },
+  {
+    "id": 29,
+    "name": "GOKSHURA"
+  },
+  {
+    "id": 30,
+    "name": "ALMOND"
+  },
+  {
+    "id": 31,
+    "name": "CARDAMOM"
+  },
+  {
+    "id": 32,
+    "name": "GINGER"
+  },
+  {
+    "id": 33,
+    "name": "CUMIN"
+  },
+  {
+    "id": 34,
+    "name": "KALIMIRCH"
+  },
+  {
+    "id": 35,
+    "name": "TEA TREE OIL"
+  },
+  {
+    "id": 36,
+    "name": "TEJPATTA"
+  },
+  {
+    "id": 37,
+    "name": "SHATAVARI"
+  },
+  {
+    "id": 38,
+    "name": "MULTANI MITTI"
+  },
+  {
+    "id": 39,
+    "name": "TAMARIND"
+  },
+  {
+    "id": 40,
+    "name": "SAL TREE"
+  },
+  {
+    "id": 41,
+    "name": "CAMPHOR"
+  },
+  {
+    "id": 42,
+    "name": "BRAHMI"
+  },
+  {
+    "id": 43,
+    "name": "SHANKHPUSHPI"
+  },
+  {
+    "id": 44,
+    "name": "JOJOBA"
+  },
+  {
+    "id": 45,
+    "name": "BLACK SALT"
+  },
+  {
+    "id": 46,
+    "name": "REETHA"
+  },
+  {
+    "id": 47,
+    "name": "SUDDH SUAHAGA"
+  },
+  {
+    "id": 48,
+    "name": "KALMEGH"
+  },
+  {
+    "id": 49,
+    "name": "VIDANGA"
+  },
+  {
+    "id": 50,
+    "name": "KARANJA"
+  },
+  {
+    "id": 51,
+    "name": "VIJAYSAR"
+  },
+  {
+    "id": 52,
+    "name": "HARAD"
+  },
+  {
+    "id": 53,
+    "name": "PALASH"
+  },
+  {
+    "id": 54,
+    "name": "ACHYRANTHES ASPERA"
+  },
+  {
+    "id": 55,
+    "name": "BAHEDA"
+  },
+  {
+    "id": 56,
+    "name": "KASANI"
+  },
+  {
+    "id": 57,
+    "name": "BABOOL"
+  },
+  {
+    "id": 58,
+    "name": "NAGARMOTHA"
+  },
+  {
+    "id": 59,
+    "name": "BHUMI AMLA"
+  },
+  {
+    "id": 60,
+    "name": "NISOTH"
+  },
+  {
+    "id": 61,
+    "name": "LEMON"
+  },
+  {
+    "id": 62,
+    "name": "KARELA"
+  },
+  {
+    "id": 64,
+    "name": "YAVASA"
+  },
+  {
+    "id": 65,
+    "name": "ISABGOL"
+  },
+  {
+    "id": 66,
+    "name": "KACHUR"
+  },
+  {
+    "id": 67,
+    "name": "MOOLI"
+  },
+  {
+    "id": 68,
+    "name": "DARUHARIDRA"
+  },
+  {
+    "id": 69,
+    "name": "KUTAKI"
+  },
+  {
+    "id": 71,
+    "name": "JAMUN"
+  },
+  {
+    "id": 72,
+    "name": "BAKUCHI"
+  },
+  {
+    "id": 73,
+    "name": "KAUNCH BEEJ"
+  },
+  {
+    "id": 74,
+    "name": "ALSI"
+  },
+  {
+    "id": 75,
+    "name": "KUCHLA"
+  },
+  {
+    "id": 76,
+    "name": "REVAND CHINI"
+  },
+  {
+    "id": 77,
+    "name": "COCOA"
+  },
+  {
+    "id": 78,
+    "name": "MUNAKKA"
+  },
+  {
+    "id": 79,
+    "name": "DHANIA"
+  },
+  {
+    "id": 80,
+    "name": "CHAULAI"
+  },
+  {
+    "id": 81,
+    "name": "ORANGE"
+  },
+  {
+    "id": 82,
+    "name": "POMEGRANATE"
+  },
+  {
+    "id": 83,
+    "name": "PUDINA"
+  },
+  {
+    "id": 84,
+    "name": "ADOOSA"
+  },
+  {
+    "id": 85,
+    "name": "PAPAYA"
+  },
+  {
+    "id": 86,
+    "name": "GUDMAR"
+  },
+  {
+    "id": 87,
+    "name": "AMALTAS"
+  },
+  {
+    "id": 88,
+    "name": "COCONUT"
+  },
+  {
+    "id": 89,
+    "name": "BLACKBERRY"
+  },
+  {
+    "id": 90,
+    "name": "SPINACH"
+  },
+  {
+    "id": 91,
+    "name": "APPLE"
+  },
+  {
+    "id": 92,
+    "name": "COFFEE"
+  },
+  {
+    "id": 93,
+    "name": "BROCCOLI"
+  },
+  {
+    "id": 94,
+    "name": "WALNUT"
+  },
+  {
+    "id": 95,
+    "name": "BANANA"
+  },
+  {
+    "id": 96,
+    "name": "BAEL"
+  },
+  {
+    "id": 97,
+    "name": "APRICOT"
+  },
+  {
+    "id": 98,
+    "name": "TRIPHALA"
+  },
+  {
+    "id": 99,
+    "name": "PEANUT"
+  },
+  {
+    "id": 100,
+    "name": "ONION"
+  },
+  {
+    "id": 101,
+    "name": "ASHOKA"
+  },
+  {
+    "id": 102,
+    "name": "ARJUNA"
+  },
+  {
+    "id": 103,
+    "name": "LOTUS"
+  },
+  {
+    "id": 104,
+    "name": "POTATO"
+  },
+  {
+    "id": 105,
+    "name": "ROSE"
+  },
+  {
+    "id": 106,
+    "name": "ANANAS"
+  },
+  {
+    "id": 107,
+    "name": "CRANBERRY"
+  },
+  {
+    "id": 108,
+    "name": "MEHENDI"
+  },
+  {
+    "id": 109,
+    "name": "PUMPKIN"
+  },
+  {
+    "id": 110,
+    "name": "GUAVA"
+  },
+  {
+    "id": 111,
+    "name": "HIBISCUS"
+  },
+  {
+    "id": 112,
+    "name": "BROWN RICE"
+  },
+  {
+    "id": 113,
+    "name": "STRAWBERRY"
+  },
+  {
+    "id": 114,
+    "name": "SUNFLOWER"
+  },
+  {
+    "id": 115,
+    "name": "CARROT"
+  },
+  {
+    "id": 116,
+    "name": "WHEAT"
+  },
+  {
+    "id": 117,
+    "name": "SESAME SEEDS"
+  },
+  {
+    "id": 118,
+    "name": "BEETROOT"
+  },
+  {
+    "id": 119,
+    "name": "PANEER"
+  },
+  {
+    "id": 120,
+    "name": "SABUDANA"
+  },
+  {
+    "id": 121,
+    "name": "GRAPES"
+  },
+  {
+    "id": 122,
+    "name": "PLUM"
+  },
+  {
+    "id": 123,
+    "name": "RAGI"
+  },
+  {
+    "id": 124,
+    "name": "CUSTARD APPLE"
+  },
+  {
+    "id": 125,
+    "name": "WATERMELON"
+  },
+  {
+    "id": 126,
+    "name": "CHEESE"
+  },
+  {
+    "id": 127,
+    "name": "CHIA SEEDS"
+  },
+  {
+    "id": 128,
+    "name": "CHICKPEA"
+  },
+  {
+    "id": 129,
+    "name": "DATES"
+  },
+  {
+    "id": 130,
+    "name": "KALONJI"
+  },
+  {
+    "id": 131,
+    "name": "GARLIC"
+  },
+  {
+    "id": 132,
+    "name": "BLACK TEA"
+  },
+  {
+    "id": 133,
+    "name": "BRINJAL"
+  },
+  {
+    "id": 134,
+    "name": "CUCUMBER"
+  },
+  {
+    "id": 135,
+    "name": "MANGO"
+  },
+  {
+    "id": 136,
+    "name": "MUSKMELON"
+  },
+  {
+    "id": 137,
+    "name": "LADY FINGER"
+  },
+  {
+    "id": 138,
+    "name": "SWEET POTATO"
+  },
+  {
+    "id": 139,
+    "name": "PEAS"
+  },
+  {
+    "id": 140,
+    "name": "PEAR"
+  },
+  {
+    "id": 141,
+    "name": "HING"
+  },
+  {
+    "id": 142,
+    "name": "CURRY LEAVES"
+  },
+  {
+    "id": 143,
+    "name": "ALUM"
+  },
+  {
+    "id": 144,
+    "name": "MAKHANA"
+  },
+  {
+    "id": 145,
+    "name": "LODHRA"
+  },
+  {
+    "id": 146,
+    "name": "CHANDRAPRABHA VATI"
+  },
+  {
+    "id": 147,
+    "name": "CHYAWANPRASH"
+  },
+  {
+    "id": 148,
+    "name": "VARUN"
+  },
+  {
+    "id": 149,
+    "name": "PISTACHIO"
+  },
+  {
+    "id": 151,
+    "name": "BALA"
+  },
+  {
+    "id": 152,
+    "name": "URAD DAL"
+  },
+  {
+    "id": 153,
+    "name": "SHIKAKAI"
+  },
+  {
+    "id": 154,
+    "name": "DEVDARU"
+  },
+  {
+    "id": 155,
+    "name": "BER"
+  },
+  {
+    "id": 156,
+    "name": "MANJISTHA"
+  },
+  {
+    "id": 157,
+    "name": "GUGGUL"
+  },
+  {
+    "id": 158,
+    "name": "PUNARNAVA"
+  },
+  {
+    "id": 159,
+    "name": "KUTAJ"
+  },
+  {
+    "id": 160,
+    "name": "KOKILAKSHA"
+  },
+  {
+    "id": 162,
+    "name": "NUTMEG"
+  },
+  {
+    "id": 163,
+    "name": "CASHEW NUTS"
+  },
+  {
+    "id": 164,
+    "name": "KIDNEY BEANS"
+  },
+  {
+    "id": 165,
+    "name": "GHEE"
+  },
+  {
+    "id": 166,
+    "name": "OATS"
+  },
+  {
+    "id": 167,
+    "name": "EUCALYPTUS OIL"
+  },
+  {
+    "id": 168,
+    "name": "MORINGA"
+  },
+  {
+    "id": 169,
+    "name": "PIPPALI"
+  },
+  {
+    "id": 170,
+    "name": "LEMONGRASS"
+  },
+  {
+    "id": 171,
+    "name": "FISH OIL"
+  },
+  {
+    "id": 172,
+    "name": "KHAS"
+  },
+  {
+    "id": 173,
+    "name": "NAGKESAR"
+  },
+  {
+    "id": 174,
+    "name": "MALKANGANI"
+  },
+  {
+    "id": 175,
+    "name": "JATAMANSI"
+  },
+  {
+    "id": 176,
+    "name": "KOKUM"
+  },
+  {
+    "id": 177,
+    "name": "SHALLAKI"
+  },
+  {
+    "id": 178,
+    "name": "KANTAKARI"
+  },
+  {
+    "id": 179,
+    "name": "DHATAKI"
+  },
+  {
+    "id": 180,
+    "name": "AGARU"
+  },
+  {
+    "id": 181,
+    "name": "PATHA"
+  },
+  {
+    "id": 182,
+    "name": "KUTH"
+  },
+  {
+    "id": 183,
+    "name": "SHALPARNI"
+  },
+  {
+    "id": 184,
+    "name": "DANTI"
+  },
+  {
+    "id": 185,
+    "name": "KARKATSHRINGI"
+  },
+  {
+    "id": 186,
+    "name": "AKARKARA"
+  },
+  {
+    "id": 187,
+    "name": "VIDARIKAND"
+  },
+  {
+    "id": 188,
+    "name": "CHIRATA"
+  },
+  {
+    "id": 189,
+    "name": "MUSTARD OIL"
+  },
+  {
+    "id": 190,
+    "name": "ATIS"
+  },
+  {
+    "id": 191,
+    "name": "TAGAR"
+  },
+  {
+    "id": 192,
+    "name": "NIRGUNDI"
+  },
+  {
+    "id": 193,
+    "name": "AVIPATTIKARA CHURNA"
+  },
+  {
+    "id": 194,
+    "name": "KHADIR"
+  },
+  {
+    "id": 195,
+    "name": "CHITRAK"
+  },
+  {
+    "id": 196,
+    "name": "CORN"
+  },
+  {
+    "id": 197,
+    "name": "JASMINE"
+  },
+  {
+    "id": 198,
+    "name": "PEEPAL"
+  },
+  {
+    "id": 199,
+    "name": "JIVAK"
+  },
+  {
+    "id": 200,
+    "name": "HADJOD"
+  },
+  {
+    "id": 201,
+    "name": "CHOPCHINI"
+  },
+  {
+    "id": 202,
+    "name": "JAGGERY"
+  },
+  {
+    "id": 203,
+    "name": "PADMAK"
+  },
+  {
+    "id": 204,
+    "name": "CHIR"
+  },
+  {
+    "id": 205,
+    "name": "MUNG DAAL"
+  },
+  {
+    "id": 206,
+    "name": "RED SANDALWOOD"
+  },
+  {
+    "id": 207,
+    "name": "TOOR DAL"
+  },
+  {
+    "id": 208,
+    "name": "ATIBALA"
+  },
+  {
+    "id": 209,
+    "name": "VATSNABH"
+  },
+  {
+    "id": 210,
+    "name": "SANDALWOOD"
+  },
+  {
+    "id": 211,
+    "name": "WHEAT GERM"
+  },
+  {
+    "id": 212,
+    "name": "KACHNAR"
+  },
+  {
+    "id": 213,
+    "name": "LAVENDER"
+  },
+  {
+    "id": 214,
+    "name": "PITTAPAPADA"
+  },
+  {
+    "id": 215,
+    "name": "DILL"
+  },
+  {
+    "id": 216,
+    "name": "SHEA BUTTER"
+  },
+  {
+    "id": 217,
+    "name": "BANYAN"
+  },
+  {
+    "id": 218,
+    "name": "ANJEER"
+  },
+  {
+    "id": 219,
+    "name": "SHEETAL CHINI"
+  },
+  {
+    "id": 220,
+    "name": "WHEATGRASS"
+  },
+  {
+    "id": 221,
+    "name": "STEVIA"
+  },
+  {
+    "id": 222,
+    "name": "MANDUKAPARNI"
+  },
+  {
+    "id": 223,
+    "name": "RASNA"
+  },
+  {
+    "id": 224,
+    "name": "PASHANBHED"
+  },
+  {
+    "id": 225,
+    "name": "LAJVANTI"
+  },
+  {
+    "id": 226,
+    "name": "SENNA"
+  },
+  {
+    "id": 227,
+    "name": "BAMBOO"
+  },
+  {
+    "id": 228,
+    "name": "AVOCADO"
+  },
+  {
+    "id": 229,
+    "name": "CHIRONJI"
+  },
+  {
+    "id": 230,
+    "name": "MAJUPHAL"
+  },
+  {
+    "id": 231,
+    "name": "STONE FLOWER"
+  },
+  {
+    "id": 232,
+    "name": "YARROW"
+  },
+  {
+    "id": 233,
+    "name": "AMALBEDHA"
+  },
+  {
+    "id": 234,
+    "name": "JHAU"
+  },
+  {
+    "id": 235,
+    "name": "HIMSRA"
+  },
+  {
+    "id": 236,
+    "name": "KASMARD"
+  },
+  {
+    "id": 237,
+    "name": "KALIJIRI"
+  },
+  {
+    "id": 238,
+    "name": "GREEN TEA"
+  },
+  {
+    "id": 239,
+    "name": "MASOOR DAL"
+  },
+  {
+    "id": 240,
+    "name": "BADI ELAICHI"
+  },
+  {
+    "id": 241,
+    "name": "CHAMOMILE"
+  },
+  {
+    "id": 242,
+    "name": "BARLEY"
+  },
+  {
+    "id": 243,
+    "name": "QUINOA"
+  },
+  {
+    "id": 244,
+    "name": "SOYBEAN"
+  },
+  {
+    "id": 245,
+    "name": "ROSEMARY"
+  },
+  {
+    "id": 246,
+    "name": "DASHMULARISHTA"
+  },
+  {
+    "id": 247,
+    "name": "AROGYAVARDHINI VATI"
+  },
+  {
+    "id": 248,
+    "name": "ASHOKARISHTA"
+  },
+  {
+    "id": 249,
+    "name": "PARIJAT"
+  },
+  {
+    "id": 250,
+    "name": "KHADIRARISHTA"
+  },
+  {
+    "id": 251,
+    "name": "SWARNA BHASMA"
+  },
+  {
+    "id": 252,
+    "name": "MILK THISTLE"
+  },
+  {
+    "id": 253,
+    "name": "SARASWATARISHTA"
+  },
+  {
+    "id": 254,
+    "name": "CHITRAKADI VATI"
+  },
+  {
+    "id": 255,
+    "name": "SITOPALADI CHURNA"
+  },
+  {
+    "id": 256,
+    "name": "SARPAGANDHA"
+  },
+  {
+    "id": 257,
+    "name": "KULTHI"
+  },
+  {
+    "id": 258,
+    "name": "GOKSHURADI GUGGULU"
+  },
+  {
+    "id": 259,
+    "name": "KUMARYASAVA"
+  },
+  {
+    "id": 260,
+    "name": "KANCHNAR GUGGULU"
+  },
+  {
+    "id": 261,
+    "name": "TRIPHALA GUGGULU"
+  },
+  {
+    "id": 262,
+    "name": "PUNARNAVADI MANDOOR"
+  },
+  {
+    "id": 263,
+    "name": "TRIPHALA GHRITA"
+  },
+  {
+    "id": 264,
+    "name": "BRAHMA RASAYAN"
+  },
+  {
+    "id": 265,
+    "name": "GINKGO BILOBA"
+  },
+  {
+    "id": 266,
+    "name": "ABHAYARISHTA"
+  },
+  {
+    "id": 267,
+    "name": "HINGWASHTAK CHURNA"
+  },
+  {
+    "id": 268,
+    "name": "LAKSHADI GUGGUL"
+  },
+  {
+    "id": 269,
+    "name": "KUTAJARISHTA"
+  },
+  {
+    "id": 270,
+    "name": "ARJUNARISHTA"
+  },
+  {
+    "id": 271,
+    "name": "AMRITARISHTA"
+  },
+  {
+    "id": 272,
+    "name": "LOHASAVA"
+  },
+  {
+    "id": 273,
+    "name": "ASHWAGANDHARISHTA"
+  },
+  {
+    "id": 274,
+    "name": "VASAVALEHA"
+  },
+  {
+    "id": 275,
+    "name": "KHADIRADI VATI"
+  },
+  {
+    "id": 276,
+    "name": "SHANKH BHASMA"
+  },
+  {
+    "id": 277,
+    "name": "PANCHATIKTA GHRITA"
+  },
+  {
+    "id": 278,
+    "name": "PANEER DODI"
+  },
+  {
+    "id": 279,
+    "name": "KALI MUSLI"
+  },
+  {
+    "id": 280,
+    "name": "BRAHMI GHRITA"
+  },
+  {
+    "id": 281,
+    "name": "CHITRAK HARITAKI"
+  },
+  {
+    "id": 282,
+    "name": "GAMBHARI"
+  },
+  {
+    "id": 283,
+    "name": "KANAKASAVA"
+  },
+  {
+    "id": 284,
+    "name": "LAVANGADI VATI"
+  },
+  {
+    "id": 285,
+    "name": "VIDANGARISHTA"
+  },
+  {
+    "id": 286,
+    "name": "PRABHAKAR VATI"
+  },
+  {
+    "id": 287,
+    "name": "VANGA BHASMA"
+  },
+  {
+    "id": 288,
+    "name": "LOHA BHASMA"
+  },
+  {
+    "id": 289,
+    "name": "KUSHMANDA RASAYANA"
+  },
+  {
+    "id": 290,
+    "name": "SANJIVANI VATI"
+  },
+  {
+    "id": 291,
+    "name": "PATALA"
+  },
+  {
+    "id": 292,
+    "name": "JATYADI GHRITA"
+  },
+  {
+    "id": 293,
+    "name": "PUSHYANUG CHURNA"
+  },
+  {
+    "id": 294,
+    "name": "SARIVADYASAVA"
+  },
+  {
+    "id": 295,
+    "name": "LAVAN BHASKAR CHURNA"
+  },
+  {
+    "id": 296,
+    "name": "PANCHSAKAR CHURNA"
+  },
+  {
+    "id": 297,
+    "name": "TALISADI CHURNA"
+  },
+  {
+    "id": 298,
+    "name": "DHATUPAUSHTIK CHURNA"
+  },
+  {
+    "id": 299,
+    "name": "TRIKATU CHURNA"
+  },
+  {
+    "id": 300,
+    "name": "KUTAJGHAN VATI"
+  },
+  {
+    "id": 301,
+    "name": "SINGHNAD GUGGUL"
+  },
+  {
+    "id": 302,
+    "name": "VASANT KUSUMAKAR RAS"
+  },
+  {
+    "id": 303,
+    "name": "MAHASUDARSHAN CHURNA"
+  },
+  {
+    "id": 304,
+    "name": "GILOY GHAN VATI"
+  }
+]
