@@ -6,7 +6,7 @@ const cors = require('cors');
 const ip = require('ip');
 
 const app = express();
-const PORT = process.env.PORT || 6272;
+const PORT = process.env.PORT || 6171;
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
