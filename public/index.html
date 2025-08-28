@@ -6,6 +6,10 @@
         <title>WiFi File Transfer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
     </head>
     <body class="bg-gray-100">
         <div class="max-w-4xl mx-auto p-4 font-sans">
@@ -96,16 +100,45 @@
                     <h2 class="text-xl font-bold text-gray-800 mb-3">
                         Available Files
                     </h2>
-                    <button
-                        id="refreshBtn"
-                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md mb-4 flex items-center"
-                    >
-                        <span
-                            id="refreshSpinner"
-                            class="hidden w-4 h-4 mr-2 border-2 border-t-2 border-white rounded-full animate-spin"
-                        ></span>
-                        Refresh File List
-                    </button>
+
+                    <!-- Multi-select controls -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <button
+                                id="refreshBtn"
+                                class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md flex items-center"
+                            >
+                                <span
+                                    id="refreshSpinner"
+                                    class="hidden w-4 h-4 mr-2 border-2 border-t-2 border-white rounded-full animate-spin"
+                                ></span>
+                                <i class="fas fa-sync-alt mr-2"></i>
+                                Refresh
+                            </button>
+
+                            <div class="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="selectAll"
+                                    class="rounded"
+                                />
+                                <label
+                                    for="selectAll"
+                                    class="text-sm text-gray-700"
+                                    >Select All</label
+                                >
+                            </div>
+                        </div>
+
+                        <button
+                            id="deleteSelectedBtn"
+                            class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md hidden"
+                        >
+                            <i class="fas fa-trash mr-2"></i>
+                            Delete Selected
+                        </button>
+                    </div>
+
                     <div
                         id="fileList"
                         class="max-h-96 overflow-y-auto border border-gray-200 rounded-md"
@@ -159,6 +192,56 @@
             </div>
         </div>
 
+        <!-- Image Preview Modal -->
+        <div
+            id="imageModal"
+            class="fixed inset-0 bg-black bg-opacity-75 hidden z-50"
+        >
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="relative max-w-4xl max-h-full">
+                    <!-- Close button -->
+                    <button
+                        id="closeModal"
+                        class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 z-10 bg-red-500 bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <!-- Navigation buttons -->
+                    <button
+                        id="prevImage"
+                        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-3xl hover:text-gray-300 z-10 bg-green-500 bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
+                    >
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+
+                    <button
+                        id="nextImage"
+                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-3xl hover:text-gray-300 z-10 bg-green-500 bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
+                    >
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Image container -->
+                    <div class="flex items-center justify-center">
+                        <img
+                            id="modalImage"
+                            src=""
+                            alt="Preview"
+                            class="w-screen h-screen object-contain"
+                        />
+                    </div>
+
+                    <!-- Image info -->
+                    <div
+                        class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center bg-black bg-opacity-50 rounded-lg px-4 py-2"
+                    >
+                        <p id="modalImageName" class="text-sm"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // DOM Elements
@@ -182,6 +265,25 @@
                 const refreshTextsSpinner = document.getElementById(
                     "refreshTextsSpinner"
                 );
+
+                // Multi-select elements
+                const selectAll = document.getElementById("selectAll");
+                const deleteSelectedBtn =
+                    document.getElementById("deleteSelectedBtn");
+
+                // Modal elements
+                const imageModal = document.getElementById("imageModal");
+                const modalImage = document.getElementById("modalImage");
+                const modalImageName =
+                    document.getElementById("modalImageName");
+                const closeModal = document.getElementById("closeModal");
+                const prevImage = document.getElementById("prevImage");
+                const nextImage = document.getElementById("nextImage");
+
+                // Global variables
+                let currentFiles = [];
+                let currentImageIndex = 0;
+                let selectedFiles = new Set();
 
                 // Tab switching
                 tabs.forEach((tab) => {
@@ -295,6 +397,102 @@
                     return date.toLocaleString();
                 }
 
+                // Get file icon based on file type
+                function getFileIcon(filename, isImage) {
+                    if (isImage) {
+                        return '<i class="fas fa-image text-blue-500"></i>';
+                    }
+
+                    const ext = filename.split(".").pop().toLowerCase();
+                    const iconMap = {
+                        pdf: "fas fa-file-pdf text-red-500",
+                        doc: "fas fa-file-word text-blue-500",
+                        docx: "fas fa-file-word text-blue-500",
+                        xls: "fas fa-file-excel text-green-500",
+                        xlsx: "fas fa-file-excel text-green-500",
+                        ppt: "fas fa-file-powerpoint text-orange-500",
+                        pptx: "fas fa-file-powerpoint text-orange-500",
+                        txt: "fas fa-file-alt text-gray-500",
+                        mp3: "fas fa-file-audio text-purple-500",
+                        mp4: "fas fa-file-video text-red-500",
+                        avi: "fas fa-file-video text-red-500",
+                        mkv: "fas fa-file-video text-red-500",
+                        zip: "fas fa-file-archive text-yellow-500",
+                        rar: "fas fa-file-archive text-yellow-500",
+                        "7z": "fas fa-file-archive text-yellow-500",
+                    };
+
+                    const iconClass =
+                        iconMap[ext] || "fas fa-file text-gray-500";
+                    return `<i class="${iconClass}"></i>`;
+                }
+
+                // Update delete selected button visibility
+                function updateDeleteButtonVisibility() {
+                    if (selectedFiles.size > 0) {
+                        deleteSelectedBtn.classList.remove("hidden");
+                        deleteSelectedBtn.textContent = `Delete Selected (${selectedFiles.size})`;
+                    } else {
+                        deleteSelectedBtn.classList.add("hidden");
+                    }
+                }
+
+                // Handle file selection
+                function handleFileSelection(filename, checked) {
+                    if (checked) {
+                        selectedFiles.add(filename);
+                    } else {
+                        selectedFiles.delete(filename);
+                    }
+                    updateDeleteButtonVisibility();
+                }
+
+                // Handle select all
+                selectAll.addEventListener("change", function () {
+                    const checkboxes =
+                        document.querySelectorAll(".file-checkbox");
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = this.checked;
+                        handleFileSelection(checkbox.value, this.checked);
+                    });
+                });
+
+                // Delete selected files
+                deleteSelectedBtn.addEventListener("click", function () {
+                    if (selectedFiles.size === 0) return;
+
+                    if (
+                        confirm(
+                            `Are you sure you want to delete ${selectedFiles.size} selected files?`
+                        )
+                    ) {
+                        const filenames = Array.from(selectedFiles);
+
+                        fetch("/files", {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({filenames}),
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                showStatus(data.message, "success");
+                                selectedFiles.clear();
+                                updateDeleteButtonVisibility();
+                                selectAll.checked = false;
+                                loadFileList();
+                            })
+                            .catch((error) => {
+                                console.error("Error deleting files:", error);
+                                showStatus(
+                                    "Failed to delete selected files",
+                                    "error"
+                                );
+                            });
+                    }
+                });
+
                 // Load file list
                 function loadFileList() {
                     refreshSpinner.classList.remove("hidden");
@@ -302,6 +500,8 @@
                     fetch("/files")
                         .then((response) => response.json())
                         .then((files) => {
+                            currentFiles = files;
+
                             if (files.length === 0) {
                                 fileList.innerHTML =
                                     '<p class="p-4 text-gray-500">No files available.</p>';
@@ -309,38 +509,72 @@
                             }
 
                             let html = "";
-                            files.forEach((file) => {
+                            files.forEach((file, index) => {
+                                const isSelected = selectedFiles.has(file.name);
                                 html += `
-                                <div class="border-b border-gray-200 p-4 hover:bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                                    <div class="mb-2 sm:mb-0">
-                                        <div class="font-medium break-all">${
-                                            file.name
-                                        }</div>
-                                        <div class="text-sm text-gray-500">
-                                            ${formatFileSize(
-                                                file.size
-                                            )} • Uploaded: ${formatDate(
+                                <div class="border-b border-gray-200 p-4 hover:bg-gray-50">
+                                    <div class="flex items-center space-x-3">
+                                        <input type="checkbox" 
+                                               class="file-checkbox rounded" 
+                                               value="${file.name}"
+                                               ${isSelected ? "checked" : ""}>
+                                        <div class="flex-shrink-0">
+                                            ${
+                                                file.isImage && file.thumbnail
+                                                    ? `<img src="${file.thumbnail}" alt="${file.name}" class="w-12 h-12 object-cover rounded cursor-pointer" onclick="openImagePreview(${index})">`
+                                                    : `<div class="w-12 h-12 flex items-center justify-center text-2xl">${getFileIcon(
+                                                          file.name,
+                                                          file.isImage
+                                                      )}</div>`
+                                            }
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="font-medium break-all">${
+                                                file.name
+                                            }</div>
+                                            <div class="text-sm text-gray-500">
+                                                ${formatFileSize(
+                                                    file.size
+                                                )} • Uploaded: ${formatDate(
                                     file.lastModified
                                 )}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="flex gap-2 justify-end">
-                                        <a href="/uploads/${encodeURIComponent(
-                                            file.name
-                                        )}" download="${file.name}" 
-                                           class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm">
-                                           Download
-                                        </a>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm delete-file" 
-                                                data-filename="${file.name}">
-                                            Delete
-                                        </button>
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="/uploads/${encodeURIComponent(
+                                                file.name
+                                            )}" download="${file.name}" 
+                                               class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm">
+                                               <i class="fas fa-download mr-1"></i>Download
+                                            </a>
+                                            <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm delete-file" 
+                                                    data-filename="${
+                                                        file.name
+                                                    }">
+                                                <i class="fas fa-trash mr-1"></i>Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 `;
                             });
 
                             fileList.innerHTML = html;
+
+                            // Add event listeners to checkboxes
+                            document
+                                .querySelectorAll(".file-checkbox")
+                                .forEach((checkbox) => {
+                                    checkbox.addEventListener(
+                                        "change",
+                                        function () {
+                                            handleFileSelection(
+                                                this.value,
+                                                this.checked
+                                            );
+                                        }
+                                    );
+                                });
 
                             // Add event listeners to delete buttons
                             document
@@ -368,6 +602,73 @@
                             refreshSpinner.classList.add("hidden");
                         });
                 }
+
+                // Image preview functions
+                window.openImagePreview = function (index) {
+                    if (!currentFiles[index] || !currentFiles[index].isImage)
+                        return;
+
+                    currentImageIndex = index;
+                    const file = currentFiles[index];
+
+                    modalImage.src = `/uploads/${encodeURIComponent(
+                        file.name
+                    )}`;
+                    modalImageName.textContent = file.name;
+                    imageModal.classList.remove("hidden");
+
+                    // Update navigation buttons
+                    prevImage.style.display = index > 0 ? "flex" : "none";
+                    nextImage.style.display =
+                        index < currentFiles.length - 1 ? "flex" : "none";
+                };
+
+                // Close modal
+                closeModal.addEventListener("click", function () {
+                    imageModal.classList.add("hidden");
+                });
+
+                // Close modal on background click
+                imageModal.addEventListener("click", function (e) {
+                    if (e.target === imageModal) {
+                        imageModal.classList.add("hidden");
+                    }
+                });
+
+                // Navigate to previous image
+                prevImage.addEventListener("click", function () {
+                    if (currentImageIndex > 0) {
+                        openImagePreview(currentImageIndex - 1);
+                    }
+                });
+
+                // Navigate to next image
+                nextImage.addEventListener("click", function () {
+                    if (currentImageIndex < currentFiles.length - 1) {
+                        openImagePreview(currentImageIndex + 1);
+                    }
+                });
+
+                // Keyboard navigation
+                document.addEventListener("keydown", function (e) {
+                    if (imageModal.classList.contains("hidden")) return;
+
+                    switch (e.key) {
+                        case "Escape":
+                            imageModal.classList.add("hidden");
+                            break;
+                        case "ArrowLeft":
+                            if (currentImageIndex > 0) {
+                                openImagePreview(currentImageIndex - 1);
+                            }
+                            break;
+                        case "ArrowRight":
+                            if (currentImageIndex < currentFiles.length - 1) {
+                                openImagePreview(currentImageIndex + 1);
+                            }
+                            break;
+                    }
+                });
 
                 // Load saved texts
                 function loadSavedTexts() {
@@ -405,11 +706,11 @@
                                                 data-content="${encodeURIComponent(
                                                     text.content
                                                 )}">
-                                            View
+                                            <i class="fas fa-eye mr-1"></i>View
                                         </button>
                                         <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-sm delete-text" 
                                                 data-index="${index}">
-                                            Delete
+                                            <i class="fas fa-trash mr-1"></i>Delete
                                         </button>
                                     </div>
                                 </div>
@@ -431,23 +732,6 @@
                                                 )
                                             );
                                             textToShare.value = content;
-                                        }
-                                    );
-                                });
-
-                            document
-                                .querySelectorAll(".generate-qr")
-                                .forEach((button) => {
-                                    button.addEventListener(
-                                        "click",
-                                        function () {
-                                            const content = decodeURIComponent(
-                                                this.getAttribute(
-                                                    "data-content"
-                                                )
-                                            );
-                                            textToShare.value = content;
-                                            generateQRCode(content);
                                         }
                                     );
                                 });
@@ -534,6 +818,8 @@
                             .then((response) => response.json())
                             .then((data) => {
                                 showStatus(data.message, "success");
+                                selectedFiles.delete(filename);
+                                updateDeleteButtonVisibility();
                                 loadFileList();
                             })
                             .catch((error) => {
