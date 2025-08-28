@@ -65,12 +65,32 @@
                         class="border-2 border-dashed border-blue-400 rounded-lg p-8 text-center bg-blue-50 cursor-pointer transition hover:bg-blue-100 mb-6"
                     >
                         <p>Drop files here or click to select files</p>
+                        <p class="text-sm text-gray-600 mt-2">
+                            No file size or count limits
+                        </p>
                         <input
                             type="file"
                             id="fileInput"
                             class="hidden"
                             multiple
                         />
+                    </div>
+
+                    <!-- Upload Progress Bar -->
+                    <div id="uploadProgress" class="hidden mb-4">
+                        <div class="bg-gray-200 rounded-full h-2.5">
+                            <div
+                                id="progressBar"
+                                class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                                style="width: 0%"
+                            ></div>
+                        </div>
+                        <p
+                            id="progressText"
+                            class="text-sm text-gray-600 mt-2 text-center"
+                        >
+                            0%
+                        </p>
                     </div>
 
                     <h2 class="text-xl font-bold text-gray-800 mb-3">
@@ -528,44 +548,45 @@
                     if (files.length === 0) return;
 
                     const formData = new FormData();
+                    const progressBar = document.getElementById("progressBar");
+                    const progressText =
+                        document.getElementById("progressText");
+                    const uploadProgress =
+                        document.getElementById("uploadProgress");
+                    const totalFiles = files.length;
+                    let uploadedBytes = 0;
 
-                    if (files.length === 1) {
-                        // Single file upload
-                        formData.append("file", files[0]);
+                    uploadProgress.classList.remove("hidden");
+                    progressBar.style.width = "0%";
+                    progressText.textContent = "0%";
 
-                        fetch("/upload", {
-                            method: "POST",
-                            body: formData,
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                showStatus(data.message, "success");
-                                loadFileList();
-                            })
-                            .catch((error) => {
-                                console.error("Error uploading file:", error);
-                                showStatus("Failed to upload file", "error");
-                            });
-                    } else {
-                        // Multiple files upload
-                        for (let i = 0; i < files.length; i++) {
-                            formData.append("files", files[i]);
-                        }
-
-                        fetch("/upload-multiple", {
-                            method: "POST",
-                            body: formData,
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                showStatus(data.message, "success");
-                                loadFileList();
-                            })
-                            .catch((error) => {
-                                console.error("Error uploading files:", error);
-                                showStatus("Failed to upload files", "error");
-                            });
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append("files", files[i]);
                     }
+
+                    fetch("/upload-multiple", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(
+                                    `HTTP error! status: ${response.status}`
+                                );
+                            }
+                            return response.json();
+                        })
+                        .then((data) => {
+                            showStatus(data.message, "success");
+                            loadFileList();
+                        })
+                        .catch((error) => {
+                            console.error("Error uploading files:", error);
+                            showStatus("Failed to upload files", "error");
+                        })
+                        .finally(() => {
+                            uploadProgress.classList.add("hidden");
+                        });
                 }
 
                 // Event listeners

@@ -4,18 +4,22 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const ip = require('ip');
+const config = require('./config');
 
 const app = express();
-const PORT = process.env.PORT || 6171;
+const PORT = config.port;
+
+// Configure server for large file uploads
+app.set('timeout', config.timeout);
 
 // Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, 'uploads');
+const uploadDir = path.join(__dirname, config.directories.uploads);
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // Create backup directory if it doesn't exist
-const backupDir = path.join(__dirname, 'backup');
+const backupDir = path.join(__dirname, config.directories.backup);
 if (!fs.existsSync(backupDir)) {
     fs.mkdirSync(backupDir, { recursive: true });
 }
@@ -29,7 +33,7 @@ if (!fs.existsSync(textsFilePath)) {
     fs.writeFileSync(textsFilePath, JSON.stringify([]));
 }
 
-// Configure storage
+// Configure storage with no file size limits
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
@@ -39,12 +43,19 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage });
+// Configure multer with no file size limits
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: config.upload.maxFileSize,
+        files: config.upload.maxFiles
+    }
+});
 
-// Enable CORS and JSON body parsing
+// Enable CORS and JSON body parsing with increased limits
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: config.upload.maxPayloadSize }));
+app.use(express.urlencoded({ extended: true, limit: config.upload.maxPayloadSize }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -66,8 +77,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
     });
 });
 
-// Multiple file upload endpoint
-app.post('/upload-multiple', upload.array('files', 10), (req, res) => {
+// Multiple file upload endpoint - no file limit
+app.post('/upload-multiple', upload.array('files'), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
     }
@@ -246,4 +257,21 @@ app.listen(PORT, () => {
     const ipAddress = ip.address();
     console.log(`Server running at http://${ipAddress}:${PORT}`);
     console.log(`Share this address with devices on the same WiFi network`);
+    console.log(`No file size or count limits configured`);
+});
+
+// Error handling for large file uploads
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(413).json({ error: 'File too large' });
+        }
+        if (err.code === 'LIMIT_FILE_COUNT') {
+            return res.status(413).json({ error: 'Too many files' });
+        }
+        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+            return res.status(400).json({ error: 'Unexpected file field' });
+        }
+    }
+    next(err);
 });
