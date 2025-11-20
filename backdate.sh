@@ -17,7 +17,7 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 # Generate last 7 days and display options
-echo -e "${YELLOW}Select a date from the past 7 days:${NC}\n"
+echo -e "${YELLOW}Select a date:${NC}\n"
 
 dates=()
 display_dates=()
@@ -28,19 +28,40 @@ for i in {1..7}; do
     display_dates+=("$display_date")
     echo "$i. $display_date ($date_str)"
 done
+echo "8. Enter custom date (e.g., 2025-03-14)"
 
 echo ""
-read -p "Enter your choice (1-7): " choice
+read -p "Enter your choice (1-8): " choice
 
 # Validate input
-if [[ ! "$choice" =~ ^[1-7]$ ]]; then
+if [[ ! "$choice" =~ ^[1-8]$ ]]; then
     echo -e "${RED}❌ Invalid selection!${NC}"
     exit 1
 fi
 
 # Get selected date
-selected_date=${dates[$((choice-1))]}
-selected_display=${display_dates[$((choice-1))]}
+if [[ "$choice" == "8" ]]; then
+    echo ""
+    read -p "Enter date (YYYY-MM-DD, e.g., 2025-03-14): " custom_date
+    
+    # Validate date format
+    if [[ ! "$custom_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo -e "${RED}❌ Invalid date format! Please use YYYY-MM-DD${NC}"
+        exit 1
+    fi
+    
+    # Validate date is valid
+    if ! date -jf "%Y-%m-%d" "$custom_date" > /dev/null 2>&1; then
+        echo -e "${RED}❌ Invalid date!${NC}"
+        exit 1
+    fi
+    
+    selected_date="$custom_date"
+    selected_display=$(date -jf "%Y-%m-%d" "$custom_date" "+%A, %B %d, %Y")
+else
+    selected_date=${dates[$((choice-1))]}
+    selected_display=${display_dates[$((choice-1))]}
+fi
 
 echo -e "\n${GREEN}✅ Selected: $selected_display${NC}\n"
 
