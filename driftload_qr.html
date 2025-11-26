@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>DriftLoad.in - QR Code Generator</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                padding: 40px;
+                max-width: 500px;
+                width: 100%;
+                text-align: center;
+            }
+
+            h1 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 28px;
+            }
+
+            .url-display {
+                color: #667eea;
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 30px;
+                word-break: break-all;
+            }
+
+            #qrcode {
+                display: flex;
+                justify-content: center;
+                margin: 30px 0;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 15px;
+            }
+
+            #qrcode canvas {
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .info {
+                background: #e8f4f8;
+                border-left: 4px solid #667eea;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 5px;
+                text-align: left;
+            }
+
+            .info p {
+                color: #555;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .info strong {
+                color: #667eea;
+            }
+
+            .buttons {
+                display: flex;
+                gap: 15px;
+                margin-top: 30px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-secondary {
+                background: #f0f0f0;
+                color: #333;
+            }
+
+            .btn-secondary:hover {
+                background: #e0e0e0;
+                transform: translateY(-2px);
+            }
+
+            .btn-success {
+                background: #10b981;
+                color: white;
+            }
+
+            .btn-success:hover {
+                background: #059669;
+                transform: translateY(-2px);
+            }
+
+            .footer {
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #e0e0e0;
+                color: #888;
+                font-size: 12px;
+            }
+
+            @media (max-width: 600px) {
+                .container {
+                    padding: 30px 20px;
+                }
+
+                h1 {
+                    font-size: 24px;
+                }
+
+                .url-display {
+                    font-size: 16px;
+                }
+
+                .buttons {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📱 DriftLoad.in</h1>
+            <div class="url-display">driftload.in</div>
+
+            <div id="qrcode"></div>
+
+            <div class="info">
+                <p>
+                    <strong>✓ Permanent QR Code</strong> - This QR code never
+                    expires
+                </p>
+                <p>
+                    <strong>✓ Direct Access</strong> - Scan to visit
+                    driftload.in instantly
+                </p>
+                <p>
+                    <strong>✓ Share Anywhere</strong> - Print, download, or
+                    share digitally
+                </p>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-primary" onclick="downloadQR()">
+                    📥 Download QR Code
+                </button>
+                <button class="btn btn-success" onclick="printQR()">
+                    🖨️ Print
+                </button>
+                <button class="btn btn-secondary" onclick="copyURL()">
+                    📋 Copy URL
+                </button>
+            </div>
+
+            <div class="footer">
+                <p>QR Code generated for driftload.in</p>
+                <p>This QR code is permanent and will always work</p>
+            </div>
+        </div>
+
+        <script>
+            // Generate QR Code
+            const url = "https://driftload.in";
+            const qrCodeElement = document.getElementById("qrcode");
+
+            new QRCode(qrCodeElement, {
+                text: url,
+                width: 300,
+                height: 300,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+
+            // Download QR Code as Image with Company Name
+            function downloadQR() {
+                const canvas = qrCodeElement.querySelector("canvas");
+                if (canvas) {
+                    // Create a new canvas with space for text
+                    const qrSize = 300;
+                    const padding = 60;
+                    const textHeight = 80;
+                    const totalHeight = qrSize + padding * 2 + textHeight;
+
+                    const downloadCanvas = document.createElement("canvas");
+                    downloadCanvas.width = qrSize + padding * 2;
+                    downloadCanvas.height = totalHeight;
+                    const ctx = downloadCanvas.getContext("2d");
+
+                    // Fill white background
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(
+                        0,
+                        0,
+                        downloadCanvas.width,
+                        downloadCanvas.height
+                    );
+
+                    // Draw QR code
+                    ctx.drawImage(canvas, padding, padding, qrSize, qrSize);
+
+                    // Add text
+                    ctx.fillStyle = "#000000";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+
+                    // Company name
+                    ctx.font = "bold 20px Arial, sans-serif";
+                    ctx.fillText(
+                        "DRIFTLOAD LOGISTICS PRIVATE LIMITED",
+                        downloadCanvas.width / 2,
+                        qrSize + padding + 15
+                    );
+
+                    // Website
+                    ctx.font = "18px Arial, sans-serif";
+                    ctx.fillStyle = "#667eea";
+                    ctx.fillText(
+                        "https://driftload.in",
+                        downloadCanvas.width / 2,
+                        qrSize + padding + 45
+                    );
+
+                    // Download the image
+                    const url = downloadCanvas.toDataURL("image/png");
+                    const link = document.createElement("a");
+                    link.download = "driftload-qrcode.png";
+                    link.href = url;
+                    link.click();
+                }
+            }
+
+            // Print QR Code
+            function printQR() {
+                window.print();
+            }
+
+            // Copy URL to Clipboard
+            function copyURL() {
+                navigator.clipboard
+                    .writeText(url)
+                    .then(() => {
+                        const btn = event.target;
+                        const originalText = btn.textContent;
+                        btn.textContent = "✓ Copied!";
+                        btn.style.background = "#10b981";
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.style.background = "";
+                        }, 2000);
+                    })
+                    .catch((err) => {
+                        alert(
+                            "Failed to copy URL. Please copy manually: " + url
+                        );
+                    });
+            }
+
+            // Print styles
+            const style = document.createElement("style");
+            style.textContent = `
+            @media print {
+                body {
+                    background: white;
+                    padding: 0;
+                }
+                .container {
+                    box-shadow: none;
+                    max-width: 100%;
+                }
+                .buttons {
+                    display: none;
+                }
+                .info {
+                    display: none;
+                }
+                .footer {
+                    display: none;
+                }
+                #qrcode {
+                    background: white;
+                }
+            }
+        `;
+            document.head.appendChild(style);
+        </script>
+    </body>
+</html>
