@@ -206,6 +206,7 @@
             const url = "https://driftload.in";
             const qrCodeElement = document.getElementById("qrcode");
 
+            // Generate QR Code with higher quality
             new QRCode(qrCodeElement, {
                 text: url,
                 width: 300,
@@ -215,20 +216,24 @@
                 correctLevel: QRCode.CorrectLevel.H,
             });
 
-            // Download QR Code as Image with Company Name
+            // Download QR Code as High Quality Image (No Text)
             function downloadQR() {
                 const canvas = qrCodeElement.querySelector("canvas");
                 if (canvas) {
-                    // Create a new canvas with space for text
-                    const qrSize = 300;
-                    const padding = 60;
-                    const textHeight = 80;
-                    const totalHeight = qrSize + padding * 2 + textHeight;
+                    // Create high-resolution canvas for better quality
+                    const scaleFactor = 4; // 4x resolution for crisp quality
+                    const originalSize = 300;
+                    const highResSize = originalSize * scaleFactor;
+                    const padding = 40 * scaleFactor;
 
                     const downloadCanvas = document.createElement("canvas");
-                    downloadCanvas.width = qrSize + padding * 2;
-                    downloadCanvas.height = totalHeight;
+                    downloadCanvas.width = highResSize + padding * 2;
+                    downloadCanvas.height = highResSize + padding * 2;
                     const ctx = downloadCanvas.getContext("2d");
+
+                    // Enable high-quality rendering
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = "high";
 
                     // Fill white background
                     ctx.fillStyle = "#ffffff";
@@ -239,36 +244,20 @@
                         downloadCanvas.height
                     );
 
-                    // Draw QR code
-                    ctx.drawImage(canvas, padding, padding, qrSize, qrSize);
-
-                    // Add text
-                    ctx.fillStyle = "#000000";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "top";
-
-                    // Company name
-                    ctx.font = "bold 20px Arial, sans-serif";
-                    ctx.fillText(
-                        "DRIFTLOAD LOGISTICS PRIVATE LIMITED",
-                        downloadCanvas.width / 2,
-                        qrSize + padding + 15
+                    // Draw QR code at high resolution
+                    ctx.drawImage(
+                        canvas,
+                        padding,
+                        padding,
+                        highResSize,
+                        highResSize
                     );
 
-                    // Website
-                    ctx.font = "18px Arial, sans-serif";
-                    ctx.fillStyle = "#667eea";
-                    ctx.fillText(
-                        "https://driftload.in",
-                        downloadCanvas.width / 2,
-                        qrSize + padding + 45
-                    );
-
-                    // Download the image
-                    const url = downloadCanvas.toDataURL("image/png");
+                    // Download the high-quality image
+                    const dataUrl = downloadCanvas.toDataURL("image/png", 1.0);
                     const link = document.createElement("a");
                     link.download = "driftload-qrcode.png";
-                    link.href = url;
+                    link.href = dataUrl;
                     link.click();
                 }
             }
