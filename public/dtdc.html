@@ -518,6 +518,14 @@
         }
 
         // Initialize UI
+        // Check for URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlTrackNo = urlParams.get('trackNumber');
+
+        if (urlTrackNo) {
+            defaultPayload.trackNumber = urlTrackNo;
+        }
+
         document.getElementById('headers').value = JSON.stringify(defaultHeaders, null, 2);
         document.getElementById('payload').value = JSON.stringify(defaultPayload, null, 2);
 
@@ -606,6 +614,9 @@
                 loading.style.display = 'none';
             }
         }
+
+        // Auto-run on load
+        runRequest();
     </script>
 </body>
 
