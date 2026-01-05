@@ -6,6 +6,7 @@ const cors = require('cors');
 const ip = require('ip');
 const config = require('./config');
 const sharp = require('sharp');
+const axios = require('axios');
 
 const app = express();
 const PORT = config.port;
@@ -104,6 +105,44 @@ app.use('/thumbnails', express.static(path.join(__dirname, 'thumbnails')));
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// DTDC Test Page
+app.get('/dtdc', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dtdc.html'));
+});
+
+// Run DTDC Request
+app.post('/api/run-dtdc', async (req, res) => {
+    try {
+        const { headers, payload } = req.body;
+
+        if (!headers || !payload) {
+            return res.status(400).json({ error: 'Missing headers or payload' });
+        }
+
+        const URL = 'https://www.dtdc.com/wp-json/custom/v1/domestic/track';
+        console.log(`Proxying request to ${URL}...`);
+
+        const response = await axios.post(URL, payload, { headers });
+
+        res.json({
+            status: response.status,
+            data: response.data
+        });
+    } catch (error) {
+        console.error('DTDC Request Error:', error.message);
+
+        const errorResponse = {
+            error: error.message,
+            status: error.response?.status,
+            data: error.response?.data
+        };
+
+        // Return 500 but include the external API response data if available
+        // so the frontend can debug (e.g. 401/403 errors from DTDC)    
+        res.status(500).json(errorResponse);
+    }
 });
 
 // File upload endpoint

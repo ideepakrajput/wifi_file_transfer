@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTDC Tracker</title>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --primary-dark: #b71c1c;
+            --bg: #f4f7f6;
+            --surface: #ffffff;
+            --text-main: #2d3436;
+            --text-secondary: #636e72;
+            --border: #dfe6e9;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-bar {
+            background: var(--surface);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .header-bar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 1.5rem;
+            gap: 1.5rem;
+            max-width: 100%;
+        }
+
+        /* Left Panel - Configuration */
+        .config-panel {
+            width: 400px;
+            min-width: 350px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .panel-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-main);
+            background: #fafafa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-content {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Right Panel - Results */
+        .results-panel {
+            flex: 1;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            background: var(--code-bg);
+            color: var(--code-text);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: none;
+            flex-grow: 1;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #e0e0e0;
+            color: var(--text-main);
+            border-color: #bdbdbd;
+        }
+
+        .copy-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(211, 47, 47, 0.4);
+        }
+
+        .run-btn:active {
+            transform: translateY(0);
+        }
+
+        .run-btn:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Results Styling */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .metric-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .raw-view-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .raw-header {
+            padding: 0.75rem 1.5rem;
+            background: #f1f2f6;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        #rawResponse {
+            flex: 1;
+            margin: 0;
+            padding: 1.5rem;
+            background: var(--surface);
+            color: #2d3436;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            border: none;
+        }
+
+        /* Status colors */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: #e3f2fd;
+            color: #1976d2;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error Toast */
+        .error-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #c62828;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
+            z-index: 100;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .config-panel {
+                width: 100%;
+                min-height: 400px;
+            }
+
+            body {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-bar">
+        <h1>
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                <path
+                    d="M20,8H23V6H20M19,20H24V18H19M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H14A2,2 0 0,0 16,20V4A2,2 0 0,0 14,2M14,20H6V4H14M8,12H11V14H8M8,8H12V10H8M10,16H12V18H10" />
+            </svg>
+            DTDC Shipment Tracker
+        </h1>
+    </div>
+
+    <div class="main-layout">
+        <!-- Configuration Panel -->
+        <div class="config-panel">
+            <div class="panel-header">Request Configuration</div>
+            <div class="panel-content">
+                <div class="input-group" style="flex: 2;">
+                    <div class="input-header">
+                        <label for="headers" style="margin:0;">Headers (JSON)</label>
+                        <button class="copy-btn" onclick="copyToClipboard('headers')">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                    <textarea id="headers" spellcheck="false"></textarea>
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <div class="input-header">
+                        <label for="payload" style="margin:0;">Payload (JSON)</label>
+                        <button class="copy-btn" onclick="copyToClipboard('payload')">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                    <textarea id="payload" spellcheck="false"></textarea>
+                </div>
+                <button id="runBtn" class="run-btn" onclick="runRequest()">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                    </svg>
+                    RUN TRACKING REQUEST
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <div class="loading-overlay" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <div style="font-weight: 500; color: #666;">Processing Request...</div>
+            </div>
+
+            <div id="results" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Current Status</div>
+                        <div class="metric-value" style="color: var(--primary);" id="statusDesc">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Reference No</div>
+                        <div class="metric-value" id="refNo">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Shipment No</div>
+                        <div class="metric-value" id="shipNo">-</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Reason</div>
+                        <div class="metric-value" id="reasonDesc">-</div>
+                    </div>
+                </div>
+
+                <div class="raw-view-container">
+                    <div class="raw-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>RAW JSON RESPONSE</span>
+                        <button class="copy-btn" onclick="copyToClipboard('rawResponse')">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                    <pre id="rawResponse"></pre>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState"
+                style="flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #999;">
+                <svg viewBox="0 0 24 24" width="64" height="64" fill="currentColor" style="opacity: 0.2">
+                    <path
+                        d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13,13H11V7H13V13M13,17H11V15H13V17Z" />
+                </svg>
+                <p style="margin-top: 1rem;">Run a request to see details here</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorToast" class="error-toast"></div>
+    <div id="successToast" class="error-toast" style="background-color: #2e7d32;">Copied to clipboard!</div>
+
+    <script>
+        // Default Configuration
+        const defaultHeaders = {
+            'authority': 'www.dtdc.com',
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.9',
+            'content-type': 'application/json',
+            'cookie': 'csrf_token=dbf8e55d-d0bd-4473-b4a9-60a4e00cf7dc',
+            'origin': 'https://www.dtdc.com',
+            'referer': 'https://www.dtdc.com/track-your-shipment/',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36'
+        };
+
+        const defaultPayload = {
+            "trackType": "cnno",
+            "trackNumber": "I25627291"
+        };
+
+        async function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            let text = '';
+
+            if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
+                text = element.value;
+            } else {
+                text = element.textContent;
+            }
+
+            try {
+                await navigator.clipboard.writeText(text);
+                showSuccess('Copied to clipboard!');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showError('Failed to copy to clipboard');
+            }
+        }
+
+        // Initialize UI
+        document.getElementById('headers').value = JSON.stringify(defaultHeaders, null, 2);
+        document.getElementById('payload').value = JSON.stringify(defaultPayload, null, 2);
+
+        // Hide results initially
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'flex';
+
+        function showError(msg) {
+            const toast = document.getElementById('errorToast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(msg) {
+            const toast = document.getElementById('successToast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        async function runRequest() {
+            const btn = document.getElementById('runBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const emptyState = document.getElementById('emptyState');
+
+            // Reset UI
+            btn.disabled = true;
+            loading.style.display = 'flex';
+            results.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            try {
+                let headers, payload;
+                try {
+                    headers = JSON.parse(document.getElementById('headers').value);
+                    payload = JSON.parse(document.getElementById('payload').value);
+                } catch (e) {
+                    throw new Error('Invalid JSON in Headers or Payload');
+                }
+
+                const response = await fetch('/api/run-dtdc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ headers, payload })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Request failed');
+                }
+
+                // Process successful response
+                let resultData = data.data;
+
+                // Simple Extraction Logic
+                let displayObj = resultData;
+                if (resultData && Array.isArray(resultData) && resultData.length > 0) {
+                    displayObj = resultData[0];
+                } else if (resultData && resultData.trackDetails) {
+                    displayObj = resultData.trackDetails;
+                }
+
+                // Safely update fields
+                document.getElementById('statusDesc').textContent = displayObj?.header?.currentStatusDescription || displayObj?.currentStatusDescription || '-';
+                document.getElementById('refNo').textContent = displayObj?.header?.referenceNo || displayObj?.referenceNo || '-';
+                document.getElementById('shipNo').textContent = displayObj?.header?.shipmentNo || displayObj?.shipmentNo || '-';
+                document.getElementById('reasonDesc').textContent = displayObj?.header?.reasonDesc || displayObj?.reasonDesc || '-';
+
+                document.getElementById('rawResponse').textContent = JSON.stringify(resultData, null, 2);
+
+                results.style.display = 'flex';
+
+            } catch (err) {
+                showError(err.message);
+                console.error(err);
+                emptyState.style.display = 'flex';
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
